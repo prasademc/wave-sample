@@ -69,14 +69,10 @@
             let camera,
                 scene,
                 renderer,
-                cameraPerspective,
                 forward = true;
 
             let particles,
                 count = 0;
-
-            let mouseX = 0,
-                mouseY = 0;
 
             let windowHalfX = window.innerWidth / 2;
             let windowHalfY = window.innerHeight / 2;
@@ -91,17 +87,10 @@
                 container = document.querySelector('.hero');
 
                 camera = new THREE.PerspectiveCamera(
-                    35,
+                    55, // Focal length
                     window.innerWidth / window.innerHeight,
-                    0.7,
-                    500000
-                );
-
-                cameraPerspective = new THREE.PerspectiveCamera(
-                    35,
-                    window.innerWidth / window.innerHeight,
-                    1,
-                    100000
+                    5, // Near plane clipping
+                    15000 // Far plane clipping
                 );
 
                 camera.position.z = 20000;
@@ -201,6 +190,7 @@
                 let time = performance.now();
                 let delta = (time - prevTime) / 1000;
 
+                // Camera forward velocity
                 velocity.z -= velocity.z * 10.0 * delta;
                 velocity.z -= 20000.0 * delta;
 
@@ -212,7 +202,7 @@
                     cameraUpdate();
                 }
 
-                camera.lookAt(scene.position);
+                // camera.lookAt(scene.position);
 
                 const positions = particles.geometry.attributes.position.array;
                 const scales = particles.geometry.attributes.scale.array;
@@ -222,12 +212,18 @@
 
                 for (let ix = 0; ix < AMOUNTX; ix++) {
                     for (let iy = 0; iy < AMOUNTY; iy++) {
+                        // Calculate wave amplitude
                         positions[i + 1] =
-                            Math.sin((ix - count) * 0.6) * 70 +
-                            Math.sin((iy - count) * 0.3) * 40;
-                        scales[j] =
-                            (Math.sin((ix - count) * 0.6) + 1) * 18 +
-                            (Math.sin((iy - count) * 0.3) + 1) * 24;
+                            // Math.sin((ix - count) * 0.6) * 70 +
+                            // Math.sin((iy - count) * 0.3) * 40;
+                            Math.sin((ix - count) * 0.6) * 128 +
+                            Math.sin((iy - count) * 0.3) * 128;
+                        // Calculate particle size amplitude gradient
+                        scales[j] = 
+                            // (Math.sin((ix - count) * 0.6) + 1) * 18 +
+                            // (Math.sin((iy - count) * 0.3) + 1) * 24;
+                            (Math.sin((ix - count) * 0.4) + 1) * 8 +
+                            (Math.sin((iy - count) * 0.2) + 1) * 16;
                         i += 3;
                         j++;
                     }
